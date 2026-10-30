@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+    /* ===== Global ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+:root {
+    --bg-dark: #070d1a;
+    --blue: #00a8ff;
+    --blue-light: #4dc9ff;
+    --blue-glow: rgba(0, 168, 255, .45);
+    --text: #eaf4ff;
+    --text-dim: #8aa8c9;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(1000px 600px at 85% -10%, rgba(0, 120, 255, .18), transparent 60%),
+        radial-gradient(800px 500px at -10% 110%, rgba(0, 200, 255, .12), transparent 60%),
+        linear-gradient(160deg, var(--bg-dark), #0a1830 55%, var(--bg-dark));
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+::selection {
+    background: var(--blue);
+    color: #fff;
+}
+
+/* ===== Header ===== */
+.hed {
+    text-align: center;
+    padding: 60px 20px 30px;
+    animation: fadeDown .9s ease both;
+}
+
+.hed h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    letter-spacing: 1px;
+    background: linear-gradient(90deg, #fff, var(--blue-light));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hed h1 i {
+    color: var(--blue);
+    margin-inline-start: 12px;
+    filter: drop-shadow(0 0 8px var(--blue-glow));
+}
+
+.hed p {
+    margin-top: 8px;
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* ===== Card + Gateway (کنار هم، بدون باکس دور عکس) ===== */
+.bank {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 50px;
+    width: min(1150px, 94vw);
+    margin: 0 auto 90px;
+    padding-top: 20px;
+}
+
+/* فقط خود عکس — بدون کادر، بدون بک‌گراند، فیت طبیعی */
+.img {
+    position: relative;
+    width: min(520px, 90vw);
+    perspective: 1100px;
+    animation: fadeUp 1s .15s ease both;
+}
+
+.img img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 14px;
+    transition: transform .6s cubic-bezier(.2, .8, .25, 1), filter .6s ease;
+    transform-style: preserve-3d;
+}
+
+.img:hover img {
+    transform: translateY(-12px) rotateX(7deg) rotateY(-5deg) scale(1.03);
+    filter: brightness(1.08) drop-shadow(0 25px 45px rgba(0, 0, 0, .65)) drop-shadow(0 0 35px var(--blue-glow));
+}
+
+/* نور شاین روی عکس هنگام هاور — بدون هیچ کادری */
+.img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, .16) 45%, rgba(0, 200, 255, .25) 50%, transparent 65%);
+    background-size: 250% 250%;
+    background-position: -120% -120%;
+    opacity: 0;
+    transition: opacity .5s ease;
+    pointer-events: none;
+}
+
+.img:hover::after {
+    opacity: 1;
+    animation: shine 1.4s ease;
+}
+
+/* متن‌های روی کارت */
+.card-number h1 {
+    position: absolute;
+    bottom: 36%;
+    left: 12%;
+    font-size: clamp(1rem, 2.4vw, 1.5rem);
+    letter-spacing: 4px;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, .8);
+    font-family: 'Courier New', monospace;
+}
+
+.deta {
+    position: absolute;
+   top: 71%;
+    left: 14%;
+}
+
+.cvv2 {
+    position: absolute;
+   top: 71%;
+    left: 45%;
+}
+
+.deta span, .cvv2 span, .name span {
+    font-size: .62rem;
+   
+    color: rgba(255, 255, 255, .75);
+}
+
+.deta p, .cvv2 p, .name p {
+
+    text-shadow: 0 1px 6px rgba(0, 0, 0, .9);
+}
+
+.name {
+    position: absolute;
+  top: 71%;
+    right: 10%;
+    text-align: right;
+    max-width: 40%;
+}
+
+.name p {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: .85rem;
+}
+
+/* ===== Inputs Panel ===== */
+.inputs {
+    width: min(510px, 92vw);
+    background: linear-gradient(165deg, rgba(13, 24, 46, .85), rgba(8, 15, 30, .9));
+    border: 1px solid rgba(0, 168, 255, .22);
+    border-radius: 24px;
+    padding: 36px 34px;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .05);
+    animation: fadeUp 1s .3s ease both;
+    transition: border-color .4s ease, box-shadow .4s ease;
+}
+
+.inputs:hover {
+    border-color: rgba(0, 168, 255, .5);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, .55), 0 0 35px rgba(0, 168, 255, .15);
+}
+
+.text-card {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.text-card h1 {
+    font-size: 1.7rem;
+}
+
+.text-card h1 i {
+    color: var(--blue);
+    margin-inline-start: 10px;
+}
+
+.text-card p {
+    color: var(--text-dim);
+    margin-top: 6px;
+    font-size: .95rem;
+}
+
+/* Inputs */
+.card {
+    display: flex;
+    gap: 12px;
+    margin: 10px 0 22px;
+}
+
+.card input,
+.c-kool input,
+.naem-card input,
+.pas input[type="text"] {
+    width: 100%;
+    background: rgba(6, 12, 26, .8);
+    border: 1px solid rgba(138, 168, 201, .25);
+    border-radius: 12px;
+    padding: 14px 14px;
+    color: var(--text);
+    font-size: 1.05rem;
+    letter-spacing: 3px;
+    text-align: center;
+    outline: none;
+    caret-color: var(--blue);
+    transition: all .35s ease;
+}
+
+.card input::placeholder,
+.c-kool input::placeholder,
+.naem-card input::placeholder,
+.pas input::placeholder {
+    color: rgba(138, 168, 201, .4);
+    letter-spacing: 2px;
+}
+
+.card input:focus,
+.c-kool input:focus,
+.naem-card input:focus,
+.pas input:focus {
+    border-color: var(--blue);
+    background: rgba(0, 60, 120, .18);
+    box-shadow: 0 0 0 4px rgba(0, 168, 255, .15), 0 0 18px var(--blue-glow);
+    transform: translateY(-2px);
+}
+
+.spans {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 6px;
+    margin-bottom: 8px;
+}
+
+.c-kool {
+    display: flex;
+    gap: 22px;
+    margin-bottom: 24px;
+}
+
+.c-kool > div:first-child {
+    flex: 1;
+}
+
+.c-kool > div:last-child {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.c-kool .span3 {
+    color: var(--blue-light);
+    font-size: 1.3rem;
+}
+
+.naem-card {
+    margin-bottom: 26px;
+}
+
+.naem-card input {
+    text-align: center;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Captcha */
+.pas {
+    margin-bottom: 30px;
+}
+
+.pas > div:last-child {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.span2 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 110px;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, #0e2a4a, #0a1f38);
+    border: 1px dashed var(--blue);
+    border-radius: 12px;
+    font-size: 1.3rem;
+    font-style: italic;
+    letter-spacing: 6px;
+    color: var(--blue-light);
+    text-shadow: 0 0 10px var(--blue-glow);
+    user-select: none;
+}
+
+#i {
+    font-size: 1.3rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: transform .6s ease, color .3s ease;
+}
+
+#i:hover {
+    color: var(--blue-light);
+    transform: rotate(360deg);
+}
+
+/* Button */
+.bot-card {
+    text-align: center;
+}
+
+#bot {
+    width: 100%;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 14px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+    cursor: pointer;
+    background: linear-gradient(90deg, #0062ff, var(--blue), var(--blue-light));
+    background-size: 200% auto;
+    box-shadow: 0 10px 30px rgba(0, 120, 255, .35);
+    transition: all .45s ease;
+}
+
+#bot i {
+    margin-inline-start: 10px;
+    transition: transform .45s ease;
+}
+
+#bot:hover {
+    background-position: right center;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0, 140, 255, .5), 0 0 30px var(--blue-glow);
+}
+
+#bot:hover i {
+    transform: translateX(6px);
+}
+
+#bot:active {
+    transform: translateY(0) scale(.98);
+}
+
+/* ===== Features ===== */
+.fast-kool {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 22px;
+    width: min(1100px, 92vw);
+    margin: 0 auto 90px;
+}
+
+.fast-kool > div {
+    background: linear-gradient(165deg, rgba(13, 24, 46, .8), rgba(8, 15, 30, .9));
+    border: 1px solid rgba(0, 168, 255, .18);
+    border-radius: 20px;
+    padding: 34px 22px;
+    text-align: center;
+    transition: transform .45s cubic-bezier(.2, .8, .25, 1), border-color .45s, box-shadow .45s;
+    animation: fadeUp 1s ease both;
+}
+
+.fast-kool > div:nth-child(1) { animation-delay: .1s; }
+.fast-kool > div:nth-child(2) { animation-delay: .2s; }
+.fast-kool > div:nth-child(3) { animation-delay: .3s; }
+.fast-kool > div:nth-child(4) { animation-delay: .4s; }
+
+.fast-kool i {
+    font-size: 2.3rem;
+    color: var(--blue);
+    margin-bottom: 14px;
+    display: inline-block;
+    transition: transform .45s ease, filter .45s ease;
+}
+
+.fast-kool h3 {
+    font-size: 1.2rem;
+    margin-bottom: 6px;
+}
+
+.fast-kool span {
+    color: var(--text-dim);
+    font-size: .9rem;
+}
+
+.fast-kool > div:hover {
+    transform: translateY(-10px);
+    border-color: var(--blue);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, .5), 0 0 30px rgba(0, 168, 255, .2);
+}
+
+.fast-kool > div:hover i {
+    transform: scale(1.25) rotate(-8deg);
+    filter: drop-shadow(0 0 12px var(--blue-glow));
+}
+
+/* ===== About / Footer ===== */
+.contaner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    width: min(1100px, 92vw);
+    margin: 0 auto 80px;
+    padding: 40px;
+    background: linear-gradient(165deg, rgba(13, 24, 46, .7), rgba(8, 15, 30, .85));
+    border: 1px solid rgba(0, 168, 255, .18);
+    border-radius: 26px;
+    backdrop-filter: blur(12px);
+}
+
+.text-left h1 {
+    font-size: clamp(1.4rem, 3.5vw, 2rem);
+    margin-bottom: 10px;
+}
+
+.text-left h2 {
+    color: var(--blue-light);
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+}
+
+.text-left h3, .text-left h4 {
+    color: var(--text-dim);
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.text-left i {
+    color: var(--blue);
+    margin-inline-start: 10px;
+    font-size: .9em;
+}
+
+.icon {
+    display: flex;
+    gap: 16px;
+    margin-top: 22px;
+}
+
+.icon i {
+    font-size: 1.5rem;
+    color: var(--text-dim);
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 168, 255, .3);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all .4s ease;
+}
+
+.icon i:hover {
+    color: #fff;
+    background: linear-gradient(135deg, #0062ff, var(--blue));
+    border-color: var(--blue);
+    transform: translateY(-5px) rotate(6deg);
+    box-shadow: 0 10px 25px rgba(0, 120, 255, .4);
+}
+
+.img-right img {
+    width: min(280px, 60vw);
+    border-radius: 22px;
+    border: 1px solid rgba(0, 168, 255, .3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .5);
+    transition: transform .5s ease, box-shadow .5s ease;
+}
+
+.img-right:hover img {
+    transform: scale(1.05) rotate(-1.5deg);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, .55), 0 0 35px var(--blue-glow);
+}
+
+/* ===== Animations ===== */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-40px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shine {
+    from { background-position: -120% -120%; }
+    to   { background-position: 130% 130%; }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+    .bank {
+        flex-direction: column;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .card {
+        flex-wrap: wrap;
+    }
+    .card input {
+        flex: 1 1 40%;
+    }
+    .c-kool {
+        flex-direction: column;
+    }
+    .contaner {
+        flex-direction: column;
+        text-align: center;
+    }
+    .icon {
+        justify-content: center;
+    }
+    .cvv2 { left: 42%; }
+}
+    </style>
+</head>
+<body>
+    <div class="hed">
+        <h1>Secure Payment<i class="fa-solid fa-shield-halved"></i></h1>
+        <p>With the Highest Level of Security</p>
+    </div>
+
+    <div class="bank">
+        <div class="img">
+<img src="./KART BANK/9e418927-7b81-497e-946c-3be3cb0e2009.png" alt="">
+<div class="card-number">
+    <h1 id="h1"></h1>
+</div>
+
+<div class="deta">
+    <span>EXPIRES</span>
+    <div style="display: flex; gap: 10px; align-items: center;">
+    <p id="m"></p>
+   <span style="color: aqua; font-size: 22px;">/</span>
+   <p id="y"></p>
+   </div>
+</div>
+<div class="cvv2">
+    <span>CVV2</span>
+    <p id="p-c"></p>
+</div>
+<div class="name">
+    <span>CARDHOLDER NAME</span>
+    <p id="na1"></p>
+</div>
+</div>
+
+ <div class="inputs">
+<div class="text-card">
+    <h1>Secure Payment<i class="fa-solid fa-lock"></i></h1>
+    <p>Please enter your card details to complete your payment.</p>
+    </div>
+       <span style="color: aliceblue; font-size: 20px; margin-left: 8px;">Card Number</span>
+    <div class="card">
+     
+        <input type="text" placeholder="0000">
+        <input type="text" placeholder="0000">
+        <input type="text" placeholder="0000">
+        <input type="text" placeholder="0000">
+    </div>
+     <div class="spans">
+ <span  style="color: aliceblue; font-size: 18px;">CVV2</span>
+ <span  style="color: aliceblue; font-size: 18px;">EXPIRES</span>
+        </div>
+    <div class="c-kool" style="display: flex;">
+       
+        <div>
+              
+            <input type="text" placeholder="CVV2" id="cv">
+         
+        </div>
+        
+        <div>
+<input type="text" placeholder="MM" id="mm">
+<span class="span3">/</span>
+<input type="text" placeholder="YY" id="yy">
+        </div>
+    </div>
+    <div class="naem-card">
+        <div style="display: flex; justify-content: center;">
+        <span style="color: aliceblue; font-size: 18px;">NAME</span>
+        </div>
+        <div style="display: flex; justify-content: center;">
+            <input type="text" placeholder="CARDHOLDER NAME" id="name" maxlength="20">
+        </div>
+    </div> 
+    <div class="pas">
+       
+        <span  style="color: aliceblue; font-size: 18px; margin-left: 8px;">SECURITY VERIFICATION</span>
+
+        <div style="display: flex; justify-content: space-around;">
+            <input type="text" placeholder="Enter security code" id="last-in">
+            <div>
+            <b class="span2"></b>
+            <i onclick="gon()" class="fa-solid fa-rotate" id="i"></i>
+        </div>
+    </div>
+    </div>
+    <div class="bot-card">
+    <button id="bot">Pay & Continue<i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+ </div>
+
+    </div>
+
+
+
+<div class="fast-kool">
+    <div>
+<i class="fa-solid fa-shield-halved"></i>
+    <h3>Secure Payment</h3>
+    <span>Advanced Encryption</span>
+</div>
+<div>
+  <i class="fa-solid fa-truck-fast"></i>
+    <h3>Fast Delivery</h3>
+    <span>In the Shortest Time</span>
+</div>
+<div>
+<i class="fa-solid fa-money-bill-transfer"></i>
+    <h3>Money-Back Guarantee</h3>
+    <span>If You're Not Satisfied</span>
+</div>
+<div>
+<i class="fa-solid fa-headset"></i>
+    <h3>Real Customer Support</h3>
+    <span>Always by Your Side</span>
+</div>
+</div>
+<div class="contaner">
+    <div class="text-left">
+        <h1>Hi - Im Amirali Eskandari<i class="fa-solid fa-user"></i></h1>
+        <h2>Frontend Developer<i class="fa-solid fa-laptop-code"></i></h2>
+        <h3>Designed & Developed by Amirali Eskan<i class="fa-solid fa-code"></i></h3>
+        <h4>Learning, Building & Growing Every Day<i class="fa-solid fa-rocket"></i></h4>
+        <div class="icon">
+<i class="fa-brands fa-instagram"></i>
+<i class="fa-brands fa-whatsapp"></i>
+<i class="fa-brands fa-telegram"></i>
+        </div>
+    </div>
+    <div class="img-right">
+        <img src="./KART BANK/ChatGPT Image Oct 26, 2026, 03_59_34 PM.png" alt="">
+    </div>
+</div>
+</body>
+<script>
+    const pc=document.querySelector('#p-c')
+    const cv=document.querySelector('#cv')
+    const h1=document.querySelector('#h1')
+    const inps=document.querySelectorAll('.inputs .card input')
+    const name=document.querySelector('#name')
+    const na1=document.querySelector('#na1')
+    const mm=document.querySelector('#mm')
+    const yy=document.querySelector('#yy')
+    const y=document.querySelector('#y')
+     const m=document.querySelector('#m')
+     const i=document.querySelector('#i')
+     const pas=document.querySelector('.span2')
+     const sum=['a','z','e','q','v','u','b',1,2,4,6,8,4,9,]
+     const bot=document.querySelector('#bot')
+     const parent=document.querySelector('.pas')
+     const last=document.querySelector('#last-in')
+    inps.forEach((val,i)=>{
+        val.addEventListener('input',()=>{
+            if(val.value.length>=4){
+               if(i!=3){
+                 val.value=val.value.slice(0,4)
+                val.nextElementSibling.focus()
+               }else{
+              
+                cv.focus()
+               
+               }
+            }
+            h1.innerText=''
+     inps.forEach((item,i)=>{
+if(item.value!=''){
+    if(item.value.length!=4){
+        h1.innerHTML+=item.value
+    }else{
+        if(i!=3){
+            h1.innerHTML+=item.value+'<b> - </b>'
+        }else{
+            h1.innerHTML+=item.value
+        }
+    }
+}
+     })
+        })
+    })
+
+
+
+    cv.addEventListener('input',()=>{
+        cv.value=cv.value.slice(0,3)
+        let x=cv.value
+        pc.innerText=x
+    })
+    name.addEventListener('input',()=>{
+        let v=name.value
+        na1.innerHTML=v
+    })
+   
+mm.addEventListener('input',()=>{
+    mm.value=mm.value.slice(0,2)
+   m.innerText=mm.value
+    
+})
+
+
+yy.addEventListener('input',()=>{
+    yy.value=yy.value.slice(0,2)
+    y.innerText=yy.value
+})
+
+gon()
+function gon(){
+
+
+   pas.innerText=''
+    for(let j=0;j<5;j++){
+        pas.innerText+=sum[Math.floor(Math.random()*sum.length)]
+    }
+
+ }
+ bot.addEventListener('click',()=>{
+    if(
+      parent.children[1].children[0].value==parent.children[1].children[1].children[0].innerText
+ ){
+        alert('Successfully completed! ✅')
+        last.style.border='3px solid green'
+    }else{
+gon()
+alert('The password is invalid.❌')
+last.style.border='3px solid red'
+last.value=null
+
+    }
+ })
+
+ 
+</script>
+</html>
